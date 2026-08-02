@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger · Accounting Suite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">§</span>
+      <div class="brand-text">
+        <strong>Ledger</strong>
+        <small>Accounting Suite</small>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-group-label">Setup</div>
+      <button class="nav-item active" data-view="view-coa">
+        <span class="nav-num">01</span> Chart of Accounts
+      </button>
+      <button class="nav-item" data-view="view-coa-define">
+        <span class="nav-num">02</span> Chart of Accounts Define
+      </button>
+      <button class="nav-item" data-view="view-main-define">
+        <span class="nav-num">03</span> Main Mapping Define
+      </button>
+      <button class="nav-item" data-view="view-sub-define">
+        <span class="nav-num">04</span> Sub Mapping Define
+      </button>
+      <button class="nav-item" data-view="view-customer-define">
+        <span class="nav-num">05</span> Customer Define
+      </button>
+      <button class="nav-item" data-view="view-supplier-define">
+        <span class="nav-num">06</span> Supplier Define
+      </button>
+
+      <div class="nav-group-label">Transactions</div>
+      <button class="nav-item" data-view="view-general-entry">
+        <span class="nav-num">07</span> General Entry
+      </button>
+
+      <div class="nav-group-label">System</div>
+      <button class="nav-item" data-view="view-settings">
+        <span class="nav-num">08</span> Database
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <span id="record-count">— accounts</span>
+      <div class="sb-pill">
+        <span id="sb-status-dot" class="sb-dot sb-off"></span>
+        <span id="sb-status-label">Not connected</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="content">
+
+    <!-- ============ VIEW 1: CHART OF ACCOUNTS (read-only) ============ -->
+    <section id="view-coa" class="view active">
+      <header class="view-header">
+        <div>
+          <h1>Chart of Accounts</h1>
+          <p class="sub">Full ledger listing — codes and mapping names only, internal keys hidden.</p>
+        </div>
+      </header>
+
+      <div class="toolbar">
+        <input type="text" id="coa-search" class="search" placeholder="Search title or account code…">
+        <select id="coa-filter-nature" class="select"></select>
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger" id="coa-table">
+          <thead>
+            <tr>
+              <th>Account Code</th>
+              <th>Title</th>
+              <th>PL / BS</th>
+              <th>Nature</th>
+              <th>Main Mapping</th>
+              <th>Sub Mapping</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ VIEW 2: CHART OF ACCOUNTS DEFINE ============ -->
+    <section id="view-coa-define" class="view">
+      <header class="view-header">
+        <div>
+          <h1>Chart of Accounts Define</h1>
+          <p class="sub">Search, modify or delete an existing account, or add a new one.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-add-account">+ Add Account</button>
+      </header>
+
+      <div class="toolbar">
+        <input type="text" id="define-search" class="search" placeholder="Search title or account code…">
+        <select id="define-filter-nature" class="select"></select>
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger" id="define-table">
+          <thead>
+            <tr>
+              <th>Account Code</th>
+              <th>Title</th>
+              <th>PL / BS</th>
+              <th>Nature</th>
+              <th>Main Mapping</th>
+              <th>Sub Mapping</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ VIEW 3: MAIN MAPPING DEFINE ============ -->
+    <section id="view-main-define" class="view">
+      <header class="view-header">
+        <div>
+          <h1>Main Mapping Define</h1>
+          <p class="sub">Search, modify or delete a main mapping, or add a new one.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-add-main">+ Add Main Mapping</button>
+      </header>
+
+      <div class="toolbar">
+        <input type="text" id="main-search" class="search" placeholder="Search main mapping…">
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger" id="main-table">
+          <thead>
+            <tr>
+              <th>Main Code</th>
+              <th>Main Mapping</th>
+              <th>Nature</th>
+              <th>Accounts Using</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ VIEW 4: SUB MAPPING DEFINE ============ -->
+    <section id="view-sub-define" class="view">
+      <header class="view-header">
+        <div>
+          <h1>Sub Mapping Define</h1>
+          <p class="sub">Search, modify or delete a sub mapping, or add a new one.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-add-sub">+ Add Sub Mapping</button>
+      </header>
+
+      <div class="toolbar">
+        <input type="text" id="sub-search" class="search" placeholder="Search sub mapping…">
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger" id="sub-table">
+          <thead>
+            <tr>
+              <th>Sub Code</th>
+              <th>Sub Mapping</th>
+              <th>Main Mapping</th>
+              <th>Accounts Using</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ VIEW 5: CUSTOMER DEFINE ============ -->
+    <section id="view-customer-define" class="view">
+      <header class="view-header">
+        <div>
+          <h1>Customer Define</h1>
+          <p class="sub">Define customers and tag each one to a GL account so their entries post directly to it.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-add-customer">+ Add Customer</button>
+      </header>
+
+      <div class="toolbar">
+        <input type="text" id="customer-search" class="search" placeholder="Search customer name or code…">
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger" id="customer-table">
+          <thead>
+            <tr>
+              <th>Customer Code</th>
+              <th>Customer Name</th>
+              <th>Tagged GL Account</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ VIEW 6: SUPPLIER DEFINE ============ -->
+    <section id="view-supplier-define" class="view">
+      <header class="view-header">
+        <div>
+          <h1>Supplier Define</h1>
+          <p class="sub">Define suppliers and tag each one to a GL account so their entries post directly to it.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-add-supplier">+ Add Supplier</button>
+      </header>
+
+      <div class="toolbar">
+        <input type="text" id="supplier-search" class="search" placeholder="Search supplier name or code…">
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger" id="supplier-table">
+          <thead>
+            <tr>
+              <th>Supplier Code</th>
+              <th>Supplier Name</th>
+              <th>Tagged GL Account</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ VIEW 7: GENERAL ENTRY (Journal Vouchers) ============ -->
+    <section id="view-general-entry" class="view">
+      <header class="view-header">
+        <div>
+          <h1>General Entry</h1>
+          <p class="sub">Journal vouchers — multi-line debit/credit entries. Debit and credit totals must match to save.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-add-voucher">+ New Voucher</button>
+      </header>
+
+      <div class="toolbar">
+        <input type="text" id="voucher-search" class="search" placeholder="Search voucher, account or description…">
+        <select id="voucher-filter-month" class="select"></select>
+        <select id="voucher-open-select" class="select">
+          <option value="">Open voucher…</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger" id="voucher-table">
+          <thead>
+            <tr>
+              <th>Voucher Name</th>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Lines</th>
+              <th>Amount</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ VIEW 8: DATABASE (Supabase connect) ============ -->
+    <section id="view-settings" class="view">
+      <header class="view-header">
+        <div>
+          <h1>Database</h1>
+          <p class="sub">Connect this app to your Supabase project. Once connected, all data loads from — and every add/edit/delete saves straight back to — your database in real time.</p>
+        </div>
+      </header>
+
+      <div class="table-wrap sb-panel">
+        <form id="sb-connect-form" class="sb-form">
+          <label class="field">
+            <span>Supabase Project URL</span>
+            <input type="text" id="sb-url" required placeholder="https://xxxxxxxx.supabase.co">
+          </label>
+          <label class="field">
+            <span>Supabase Anon / Public API Key</span>
+            <input type="text" id="sb-key" required placeholder="eyJhbGciOi...">
+          </label>
+          <p class="sb-hint">Find both under Project Settings → API in your Supabase dashboard. Run the provided <code>schema.sql</code> in the SQL Editor first so the tables exist.</p>
+          <div class="modal-actions" style="margin-top:4px;">
+            <button type="submit" class="btn btn-primary">Connect</button>
+          </div>
+        </form>
+
+        <div id="sb-connected-box" class="sb-connected-box" style="display:none;">
+          <div class="sb-connected-row">
+            <span class="sb-dot sb-on"></span>
+            <div>
+              <strong>Connected to Supabase</strong>
+              <p class="sb-hint">Data is syncing live. Changes made here — or in the Supabase dashboard, or from another browser tab — appear automatically.</p>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="sb-disconnect-btn">Disconnect</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ MODAL: ADD / EDIT ACCOUNT ============ -->
+<div class="modal-backdrop" id="account-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="account-modal-title">Add Account</h2>
+      <button class="modal-close" data-close="account-modal">&times;</button>
+    </div>
+    <form id="account-form" class="modal-body">
+      <input type="hidden" id="acc-edit-code">
+
+      <label class="field">
+        <span>Account Title</span>
+        <input type="text" id="acc-title" required placeholder="e.g. Office Rent">
+      </label>
+
+      <label class="field">
+        <span>Nature</span>
+        <select id="acc-nature" required></select>
+      </label>
+
+      <label class="field">
+        <span>PL &amp; BS</span>
+        <select id="acc-category" required></select>
+      </label>
+
+      <label class="field">
+        <span>Main Mapping</span>
+        <select id="acc-main" required></select>
+      </label>
+
+      <label class="field">
+        <span>Sub Mapping</span>
+        <select id="acc-sub" required></select>
+      </label>
+
+      <div class="code-preview">
+        <span>Account Code</span>
+        <strong id="acc-code-preview">—</strong>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close="account-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="acc-submit-btn">Add Account</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: ADD / EDIT MAIN MAPPING ============ -->
+<div class="modal-backdrop" id="main-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="main-modal-title">Add Main Mapping</h2>
+      <button class="modal-close" data-close="main-modal">&times;</button>
+    </div>
+    <form id="main-form" class="modal-body">
+      <input type="hidden" id="main-edit-code">
+      <label class="field">
+        <span>Main Mapping Name</span>
+        <input type="text" id="main-name" required placeholder="e.g. Trade and Other Payables">
+      </label>
+      <label class="field">
+        <span>Nature</span>
+        <select id="main-nature" required></select>
+      </label>
+      <div class="code-preview">
+        <span>Main Code</span>
+        <strong id="main-code-preview">—</strong>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close="main-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="main-submit-btn">Add Main Mapping</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: ADD / EDIT SUB MAPPING ============ -->
+<div class="modal-backdrop" id="sub-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="sub-modal-title">Add Sub Mapping</h2>
+      <button class="modal-close" data-close="sub-modal">&times;</button>
+    </div>
+    <form id="sub-form" class="modal-body">
+      <input type="hidden" id="sub-edit-code">
+      <label class="field">
+        <span>Sub Mapping Name</span>
+        <input type="text" id="sub-name" required placeholder="e.g. Trade Liabilities">
+      </label>
+      <label class="field">
+        <span>Main Mapping</span>
+        <select id="sub-main" required></select>
+      </label>
+      <div class="code-preview">
+        <span>Sub Code</span>
+        <strong id="sub-code-preview">—</strong>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close="sub-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="sub-submit-btn">Add Sub Mapping</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: ADD / EDIT CUSTOMER ============ -->
+<div class="modal-backdrop" id="customer-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="customer-modal-title">Add Customer</h2>
+      <button class="modal-close" data-close="customer-modal">&times;</button>
+    </div>
+    <form id="customer-form" class="modal-body">
+      <input type="hidden" id="cust-edit-code">
+      <label class="field">
+        <span>Customer Name</span>
+        <input type="text" id="cust-name" required placeholder="e.g. ABC Traders">
+      </label>
+      <label class="field">
+        <span>Tagged GL Account</span>
+        <select id="cust-account" required></select>
+      </label>
+      <div class="code-preview">
+        <span>Customer Code</span>
+        <strong id="cust-code-preview">—</strong>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close="customer-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="cust-submit-btn">Add Customer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: ADD / EDIT SUPPLIER ============ -->
+<div class="modal-backdrop" id="supplier-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="supplier-modal-title">Add Supplier</h2>
+      <button class="modal-close" data-close="supplier-modal">&times;</button>
+    </div>
+    <form id="supplier-form" class="modal-body">
+      <input type="hidden" id="supp-edit-code">
+      <label class="field">
+        <span>Supplier Name</span>
+        <input type="text" id="supp-name" required placeholder="e.g. XYZ Enterprises">
+      </label>
+      <label class="field">
+        <span>Tagged GL Account</span>
+        <select id="supp-account" required></select>
+      </label>
+      <div class="code-preview">
+        <span>Supplier Code</span>
+        <strong id="supp-code-preview">—</strong>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close="supplier-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="supp-submit-btn">Add Supplier</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: ADD / EDIT VOUCHER (General Entry) ============ -->
+<div class="modal-backdrop" id="voucher-modal">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <h2 id="voucher-modal-title">New Voucher</h2>
+      <button class="modal-close" data-close="voucher-modal">&times;</button>
+    </div>
+    <form id="voucher-form" class="modal-body">
+      <input type="hidden" id="vch-edit-id">
+
+      <div class="voucher-top-row">
+        <label class="field">
+          <span>Date</span>
+          <input type="date" id="vch-date" required>
+        </label>
+        <div class="code-preview">
+          <span>Voucher Name</span>
+          <strong id="vch-name-preview">—</strong>
+        </div>
+      </div>
+
+      <label class="field">
+        <span>Narration (optional)</span>
+        <input type="text" id="vch-narration" placeholder="Overall description of this voucher">
+      </label>
+
+      <div class="lines-wrap">
+        <table class="ledger lines-table" id="voucher-lines-table">
+          <thead>
+            <tr>
+              <th>Account Code &amp; Title</th>
+              <th>Description</th>
+              <th class="num">Debit</th>
+              <th class="num">Credit</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="voucher-lines-body"></tbody>
+        </table>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-add-line">+ Add Line</button>
+      </div>
+
+      <div class="totals-bar" id="voucher-totals-bar">
+        <div><span>Total Debit</span><strong id="vch-total-debit">0</strong></div>
+        <div><span>Total Credit</span><strong id="vch-total-credit">0</strong></div>
+        <div><span>Difference</span><strong id="vch-diff">0</strong></div>
+      </div>
+      <p class="balance-msg" id="voucher-balance-msg">Add lines and balance debit and credit to save.</p>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close="voucher-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="vch-submit-btn" disabled>Save Voucher</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ CONFIRM DELETE ============ -->
+<div class="modal-backdrop" id="confirm-modal">
+  <div class="modal modal-sm">
+    <div class="modal-head">
+      <h2>Delete this record?</h2>
+      <button class="modal-close" data-close="confirm-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-text" class="confirm-text"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close="confirm-modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Data -->
+<script src="data.js"></script>
+<!-- Shared state, helpers, code generators -->
+<script src="state.js"></script>
+<!-- Supabase client (CDN) + connection/sync module -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<!-- Sidebar navigation -->
+<script src="nav.js"></script>
+<!-- One file per module, each self-contained -->
+<script src="coa.js"></script>
+<script src="coa-define.js"></script>
+<script src="main-define.js"></script>
+<script src="sub-define.js"></script>
+<script src="customer-define.js"></script>
+<script src="supplier-define.js"></script>
+<script src="general-entry.js"></script>
+<!-- Boots the initial screen -->
+<script src="app.js"></script>
+</body>
+</html>
